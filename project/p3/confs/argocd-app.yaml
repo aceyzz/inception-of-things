@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: iot-playground
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/aceyzz/cedmulle-42iot.git
+    targetRevision: HEAD
+    path: confs/app
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true

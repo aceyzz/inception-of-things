@@ -1,0 +1,7 @@
+.env
+!.env.example
+*.pub
+*id_rsa*
+cduffaut/p1/node-token
+*.pem
+*.vagrant
