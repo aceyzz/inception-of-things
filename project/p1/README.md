@@ -5,8 +5,8 @@
 | Exigences du sujet P1                                | Statut | Commande Makefile     | Où regarder / Résultat attendu                                             |
 | ---------------------------------------------------- | :----: | --------------------- | -------------------------------------------------------------------------- |
 | Utilisation de **Vagrant** avec VirtualBox           |    ✅   | `make up`             | Les VM démarrent via `Vagrantfile` (provider VirtualBox).                  |
-| Deux VMs distinctes : **controller** & **worker**    |    ✅   | `make status`         | Affiche `cedmulleS running` et `cedmulleSW running`.                       |
-| Chaque VM a un **hostname unique**                   |    ✅   | `make ssh-controller` | Shell → `vagrant@cedmulleS`. <br>`make ssh-worker` → `vagrant@cedmulleSW`. |
+| Deux VMs distinctes : **controller** & **worker**    |    ✅   | `make status`         | Affiche `cduffautS running` et `cduffautSW running`.                       |
+| Chaque VM a un **hostname unique**                   |    ✅   | `make ssh-controller` | Shell → `vagrant@cduffautS`. <br>`make ssh-worker` → `vagrant@cduffautSW`. |
 | Réseau privé configuré avec IP fixes                 |    ✅   | `make ip-controller`  | Affiche `192.168.56.110`. <br>`make ip-worker` → `192.168.56.111`.         |
 | Authentification SSH avec **clé publique copiée**    |    ✅   | `make ssh-controller` | Vérifier `~/.ssh/authorized_keys` contient la clé fournie.                 |
 | Installation de K3s sur **controller**               |    ✅   | `make k3s-status`     | `[Controller]` → `active (running)` pour `k3s-server`.                     |
@@ -20,7 +20,7 @@
 | Ajout                                              | Commande Makefile                         | Où regarder / Résultat attendu                                            |
 | -------------------------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------- |
 | Makefile centralisé avec couleurs et aide intégrée | `make help`                               | Affiche toutes les commandes dispos avec un menu coloré.                  |
-| Vérification rapide du statut des VM               | `make status`                             | Affiche `running`/`poweroff` pour `cedmulleS` et `cedmulleSW`.            |
+| Vérification rapide du statut des VM               | `make status`                             | Affiche `running`/`poweroff` pour `cduffautS` et `cduffautSW`.            |
 | Connexion rapide en SSH                            | `make ssh-controller` / `make ssh-worker` | Ouvre directement une session SSH vers la VM correspondante.              |
 | Affichage des IP privées                           | `make ip-controller` / `make ip-worker`   | Retourne les IP fixes configurées (192.168.56.110 / 192.168.56.111).      |
 | Vérification centralisée du statut K3s             | `make k3s-status`                         | Affiche en un coup d’œil l’état des services `k3s-server` et `k3s-agent`. |

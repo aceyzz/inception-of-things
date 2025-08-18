@@ -1,78 +1,35 @@
-VAGRANTFILE_API_VERSION = "2"
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/jammy64"
+  
+  config.vm.define "cduffautS" do |server|
+    server.vm.hostname = "cduffautS"
+    server.vm.network "private_network", ip: "192.168.56.110"
+    server.vm.provider "virtualbox" do |vb|
+      vb.name = "cduffautS"
+      vb.memory = "1024"
+      vb.cpus = 1
+    end
 
-k3s_token = nil
-if File.file?(".env")
-  line = File.readlines(".env", chomp: true).find { |l| l =~ /^\s*K3S_TOKEN=/ }
-  k3s_token = line&.split("=", 2)&.last&.strip
-end
-abort("K3S_TOKEN manquant dans .env") if k3s_token.nil? || k3s_token.empty?
+    server.vm.provision "shell", inline: <<-SHELL
+      apt-get update
+      curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644
+      cp ./node-token /vagrant/node-token
+    SHELL
+  end
 
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-	os_box      = "generic/ubuntu2204" # pour linux ecole 42
-	provider    = "virtualbox"
-	network     = "private_network"
-	memory      = 1024
-	cpus        = 1
-	vram        = 16
+  config.vm.define "cduffautSW" do |worker|
+    worker.vm.hostname = "cduffautSW"
+    worker.vm.network "private_network", ip: "192.168.56.111"
+    worker.vm.provider "virtualbox" do |vb|
+      vb.name = "cduffautSW"
+      vb.memory = "1024"
+      vb.cpus = 1
+    end
 
-	script_dir  = File.expand_path("scripts")
-
-	config.vm.synced_folder "./ssh", "/vagrant_ssh"
-
-	controller = {
-		name:      "cedmulleS",
-		hostname:  "cedmulleS",
-		ip:        "192.168.56.110",
-		ssh_key:   "/vagrant_ssh/controller_id_rsa.pub"
-	}
-
-	worker = {
-		name:      "cedmulleSW",
-		hostname:  "cedmulleSW",
-		ip:        "192.168.56.111",
-		ssh_key:   "/vagrant_ssh/worker1_id_rsa.pub",
-		server_ip: controller[:ip]
-	}
-
-	config.vm.box = os_box
-
-	# Server
-	config.vm.define controller[:name] do |vm|
-		vm.vm.name = controller[:name]
-		vm.vm.hostname = controller[:hostname]
-		vm.vm.network network, ip: controller[:ip]
-		vm.vm.provider provider do |vb|
-			vb.memory = memory
-			vb.cpus  = cpus
-			vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
-			vb.customize ["modifyvm", :id, "--vram", vram]
-		end
-		vm.vm.provision "shell", inline: "apt-get update -y && apt-get install -y curl netcat-openbsd"
-		vm.vm.provision "shell", path: "#{script_dir}/setup_ssh.sh", args: [controller[:ssh_key]]
-		vm.vm.provision "shell", path: "#{script_dir}/setup_k3s-controller.sh", args: [k3s_token]
-	end
-
-	# Worker
-	config.vm.define worker[:name] do |vm|
-		vm.vm.name = worker[:name]
-		vm.vm.hostname = worker[:hostname]
-		vm.vm.network network, ip: worker[:ip]
-		vm.vm.provider provider do |vb|
-			vb.memory = memory
-			vb.cpus  = cpus
-			vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
-			vb.customize ["modifyvm", :id, "--vram", vram]
-		end
-		vm.vm.provision "shell", inline: "apt-get update -y && apt-get install -y curl netcat-openbsd"
-		vm.vm.provision "shell", path: "#{script_dir}/setup_ssh.sh", args: [worker[:ssh_key]]
-
-		vm.vm.provision "shell", inline: <<-SHELL
-		SERVER_IP="#{worker[:server_ip]}"
-			until nc -z "$SERVER_IP" 6443; do
-				echo "[$(date '+%Y-%m-%d %H:%M:%S')] En attente de $SERVER_IP:6443"; sleep 2
-			done
-		SHELL
-
-		vm.vm.provision "shell", path: "#{script_dir}/setup_k3s-worker.sh", args: [worker[:server_ip], k3s_token]
-	end
+    worker.vm.provision "shell", inline: <<-SHELL
+      apt-get update
+      sleep 30
+      curl -sfL https://get.k3s.io | K3S_URL=https://192.168.56.110:6443 K3S_TOKEN=$(cat /vagrant/node-token) sh -
+    SHELL
+  end
 end
