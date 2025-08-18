@@ -13,7 +13,7 @@ Vagrant.configure("2") do |config|
     server.vm.provision "shell", inline: <<-SHELL
       apt-get update
       curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644
-      cp ./node-token /vagrant/node-token
+      cp /var/lib/rancher/k3s/server/node-token /vagrant/node-token
     SHELL
   end
 
