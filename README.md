@@ -36,7 +36,7 @@ Il est divisé en **3 parties indépendantes** :
 
 ## [P1] Vagrant & K3s
 
-[Voir exigences et implementation](./p1/README.md)
+[Voir exigences et implementation](./project/p1/README.md)
 
 **VMs VirtualBox** créées via Vagrant.  
 1 contrôleur (`cedmulleS`) et 1 worker (`cedmulleSW`).  
@@ -71,7 +71,7 @@ Connexion SSH configurée via clés publiques.
 
 ## [P2] K3s & Réplicas d’Applications
 
-[Voir exigences et implementation](./p2/README.md)
+[Voir exigences et implementation](./project/p2/README.md)
 
 Cluster **K3s** déployé sur une seule VM via Vagrant.  
 3 applications web simples déployées derrière un Ingress Controller (**Traefik**) avec du **host-based routing** :  
@@ -108,7 +108,7 @@ Cluster **K3s** déployé sur une seule VM via Vagrant.
 
 ## [P3] K3d & ArgoCD
 
-[Voir exigences et implementation](./p3/README.md)
+[Voir exigences et implementation](./project/p3/README.md)
 
 Cluster Kubernetes lancé avec **k3d** (Docker-in-Docker).  
 Namespaces `argocd` et `dev`.  
