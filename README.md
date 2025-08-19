@@ -20,8 +20,13 @@ Il est divisé en **3 parties indépendantes** :
    - Créer deux VMs avec Vagrant (un contrôleur, un worker).  
    - Installer et configurer K3s dessus.  
 
-2. **Partie 2 : K3s & replicas d'applications**  
-   - A venir
+2. **Partie 2 : K3s & réplicas d'applications**  
+	- Déployer un cluster K3s sur une seule VM via Vagrant.  
+	- Déployer 3 applications web (basées sur nginx:alpine) derrière un Ingress Controller (Traefik) avec du host-based routing :  
+	  - `app1.com` → Application 1 (1 replica)  
+	  - `app2.com` → Application 2 (3 replicas)  
+	  - Route par défaut → Application 3 (1 replica)  
+	- Configurer les services, l’Ingress et la redirection de ports pour accéder aux applications via leur nom de domaine.
 
 3. **Partie 3 : K3d & ArgoCD**  
    - Déployer un cluster Kubernetes avec K3d (Docker).  
@@ -64,9 +69,40 @@ Connexion SSH configurée via clés publiques.
 
 <br>
 
-## [P2] K3s & replicas d'applications
+## [P2] K3s & Réplicas d’Applications
 
-*A venir*  
+[Voir exigences et implementation](./p2/README.md)
+
+Cluster **K3s** déployé sur une seule VM via Vagrant.  
+3 applications web simples déployées derrière un Ingress Controller (**Traefik**) avec du **host-based routing** :  
+- `app1.com` → Application 1  
+- `app2.com` → Application 2 (**3 replicas**)  
+- Route par défaut → Application 3  
+
+### Fonctionnalités principales
+- VM unique créée via **Vagrant** (nom : `cduffautS`, IP : `192.168.56.110`, Ubuntu 22.04, 2 CPU, 2048 MB RAM).
+- **K3s** installé en mode server.
+- **3 applications** déployées (basées sur `nginx:alpine`) :
+	- **App1** : 1 replica, Service `ClusterIP`, contenu `"Hello from App1!"`, routée par `app1.com`.
+	- **App2** : 3 replicas, Service `ClusterIP`, contenu `"Hello from App2!"`, routée par `app2.com`.
+	- **App3** : 1 replica, Service `ClusterIP`, contenu `"Hello from App3! - DEFAULT application"`, routée par défaut.
+- **Ingress Traefik** configuré pour router selon le nom de domaine (host-based).
+- Redirection de port : `8080 (host)` → `80 (guest)`.
+- Ajout de règles dans `/etc/hosts` pour accéder aux apps via nom de domaine.
+
+### Commandes Makefile
+
+> A venir
+
+### Vérifications
+- 1 node K3s actif : `kubectl get nodes` → 1 node Ready.
+- 5 pods déployés : `kubectl get pods` (App1 + App2 x3 + App3).
+- 3 services `ClusterIP` : `kubectl get services`.
+- Ingress configuré : `kubectl get ingress` (routes pour app1.com, app2.com, défaut).
+- Accès applicatif :
+	- [http://app1.com:8080](http://app1.com:8080) → `"Hello from App1!"`
+	- [http://app2.com:8080](http://app2.com:8080) → `"Hello from App2!"` (load balancing entre 3 pods)
+	- [http://192.168.56.110:8080](http://192.168.56.110:8080) → `"Hello from App3! - DEFAULT application"`
 
 <br>
 
