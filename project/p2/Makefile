@@ -1,5 +1,5 @@
 
-.PHONY: help up halt destroy status ssh check-ip check-eth1 check-hostname k3s-status k3s-logs deploy-apps delete-apps get-pods get-services get-ingress get-all test-apps
+.PHONY: help up halt destroy status ssh check-ip k3s-status deploy-apps get-services get-ingress test-apps
 
 # colors
 RED=\033[0;31m
@@ -12,6 +12,7 @@ NC=\033[0m
 
 
 help:
+	@echo ""
 	@echo "$(CYAN)Commandes disponibles :$(NC)"
 	@echo "  $(GREEN)make up$(NC)              $(GREY)# Démarrage de la VM (vagrant up)$(NC)"
 	@echo "  $(GREEN)make halt$(NC)            $(GREY)# Arrêt de la VM (vagrant halt)$(NC)"
@@ -25,7 +26,7 @@ help:
 	@echo "  $(GREEN)make get-services$(NC)    $(GREY)# Affiche les services déployés (kubectl get svc)$(NC)"
 	@echo "  $(GREEN)make deploy-apps$(NC)     $(GREY)# Déploie les 3 applications et l'ingress sur K3s$(NC)"
 	@echo "  $(GREEN)make test-apps$(NC)       $(GREY)# Teste l'accès aux applications via curl (HOST)$(NC)"
-
+	@echo ""
 
 up:
 	@echo "$(YELLOW)Démarrage de la VM...$(NC)"

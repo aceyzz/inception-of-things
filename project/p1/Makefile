@@ -9,6 +9,7 @@ GREY=\033[2;37m
 NC=\033[0m
 
 help:
+	@echo ""
 	@echo "$(CYAN)Commandes disponibles :$(NC)"
 	@echo "  $(GREEN)make up$(NC)              $(GREY)# Démarre les deux VM (Vagrant up)$(NC)"
 	@echo "  $(GREEN)make halt$(NC)            $(GREY)# Arrête les deux VM (Vagrant halt)$(NC)"
@@ -19,6 +20,7 @@ help:
 	@echo "  $(GREEN)make check-ip$(NC)        $(GREY)# Affiche les IP de la VM controller et worker$(NC)"
 	@echo "  $(GREEN)make kubectl-nodes$(NC)   $(GREY)# Affiche les nœuds Kubernetes (kubectl get nodes -o wide)$(NC)"
 	@echo "  $(GREEN)make k3s-status$(NC)      $(GREY)# Vérifie le status de k3s sur les deux VM$(NC)"
+	@echo ""
 
 up:
 	@echo "$(YELLOW)Démarrage des VMs...$(NC)"
