@@ -1,4 +1,4 @@
-.PHONY: up halt destroy status ssh-controller ssh-worker ip-controller ip-worker k3s-status help kubectl-nodes
+.PHONY: help up halt destroy status ssh-controller ssh-worker check-ip kubectl-nodes k3s-status
 
 RED=\033[0;31m
 GREEN=\033[0;32m
@@ -14,42 +14,53 @@ help:
 	@echo "  $(GREEN)make halt$(NC)            $(GREY)# Arrête les deux VM (Vagrant halt)$(NC)"
 	@echo "  $(GREEN)make destroy$(NC)         $(GREY)# Détruit les deux VM (Vagrant destroy)$(NC)"
 	@echo "  $(GREEN)make status$(NC)          $(GREY)# Affiche le statut des VM (Vagrant status)$(NC)"
-	@echo "  $(GREEN)make ssh-controller$(NC)  $(GREY)# SSH sur la VM controller (cduffautS)$(NC)"
-	@echo "  $(GREEN)make ssh-worker$(NC)      $(GREY)# SSH sur la VM worker (cduffautSW)$(NC)"
-	@echo "  $(GREEN)make ip-controller$(NC)   $(GREY)# Affiche l'IP de la VM controller (eth1)$(NC)"
-	@echo "  $(GREEN)make ip-worker$(NC)       $(GREY)# Affiche l'IP de la VM worker (eth1)$(NC)"
-	@echo "  $(GREEN)make k3s-status$(NC)      $(GREY)# Vérifie le status de k3s sur les deux VM$(NC)"
+	@echo "  $(GREEN)make ssh-controller$(NC)  $(GREY)# Se connecter en SSH sur la VM controller (cedmulleS)$(NC)"
+	@echo "  $(GREEN)make ssh-worker$(NC)      $(GREY)# Se connecter en SSH sur la VM worker (cedmulleSW)$(NC)"
+	@echo "  $(GREEN)make check-ip$(NC)        $(GREY)# Affiche les IP de la VM controller et worker$(NC)"
 	@echo "  $(GREEN)make kubectl-nodes$(NC)   $(GREY)# Affiche les nœuds Kubernetes (kubectl get nodes -o wide)$(NC)"
+	@echo "  $(GREEN)make k3s-status$(NC)      $(GREY)# Vérifie le status de k3s sur les deux VM$(NC)"
 
 up:
-	vagrant up
+	@echo "$(YELLOW)Démarrage des VMs...$(NC)"
+	@vagrant up
 
 halt:
-	vagrant halt
+	@echo "$(YELLOW)Arrêt des VMs...$(NC)"
+	@vagrant halt
 
 destroy:
-	vagrant destroy -f
+	@echo "$(YELLOW)Destruction des VMs...$(NC)"
+	@vagrant destroy -f
+	@rm -rf .vagrant
 
 status:
-	vagrant status
+	@echo "$(YELLOW)Statut des VMs...$(NC)"
+	@vagrant status
 
 ssh-controller:
-	vagrant ssh cduffautS
+	@echo "$(YELLOW)Connexion en cours sur le controller cedmulleS...$(NC)"
+	@vagrant ssh cedmulleS
 
 ssh-worker:
-	vagrant ssh cduffautSW
+	@echo "$(YELLOW)Connexion en cours sur le worker cedmulleSW...$(NC)"
+	@vagrant ssh cedmulleSW
 
-ip-controller:
-	vagrant ssh cduffautS -c "ip a show eth1"
-
-ip-worker:
-	vagrant ssh cduffautSW -c "ip a show eth1"
+check-ip:
+	@echo "$(YELLOW)[Controller]$(NC)"
+	@vagrant ssh cedmulleS -c "hostname -I | tr ' ' '\n' | grep '^192\.'"
+	@echo ""
+	@echo "$(YELLOW)[Worker]$(NC)"
+	@vagrant ssh cedmulleSW -c "hostname -I | tr ' ' '\n' | grep '^192\.'"
+	@echo ""
 
 kubectl-nodes:
-	vagrant ssh cduffautS -c "kubectl get nodes -o wide"
+	@echo "$(YELLOW)Affichage des nœuds Kubernetes...$(NC)"
+	@vagrant ssh cedmulleS -c "kubectl get nodes -o wide"
 
 k3s-status:
 	@echo "$(YELLOW)[Controller]$(NC)"
-	vagrant ssh cduffautS -c "sudo systemctl status k3s || sudo systemctl status k3s-server"
+	@vagrant ssh cedmulleS -c "sudo systemctl status k3s || sudo systemctl status k3s-server"
+	@echo ""
 	@echo "$(YELLOW)[Worker]$(NC)"
-	vagrant ssh cduffautSW -c "sudo systemctl status k3s-agent || sudo systemctl status k3s"
+	@vagrant ssh cedmulleSW -c "sudo systemctl status k3s-agent || sudo systemctl status k3s"
+	@echo ""
