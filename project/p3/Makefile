@@ -3,21 +3,22 @@
 GREEN=\033[0;32m
 YELLOW=\033[1;33m
 CYAN=\033[0;36m
+GREY=\033[2;37m
 RESET=\033[0m
 
 SCRIPTS=scripts
 
 help:
 	@echo "$(CYAN)Utilisation :$(RESET)"
-	@echo "  $(GREEN)make up$(RESET)               - Démarrer et provisionner tout"
-	@echo "  $(GREEN)make status$(RESET)           - Vérifier l'état du cluster et de l'application"
-	@echo "  $(GREEN)make set-version-1$(RESET)    - Basculer l'application en v1 via GitOps"
-	@echo "  $(GREEN)make set-version-2$(RESET)    - Basculer l'application en v2 via GitOps"
-	@echo "  $(GREEN)make app-start$(RESET)        - Exposer l'application sur localhost:8080 en arrière-plan"
-	@echo "  $(GREEN)make app-stop$(RESET)         - Arrêter le port-forward de l'application sur 8080"
-	@echo "  $(GREEN)make clean$(RESET)            - Supprimer l'application Argo et les ressources dev"
-	@echo "  $(GREEN)make nuke$(RESET)             - Supprimer le cluster k3d"
-	@echo "  $(GREEN)make doctor$(RESET)           - Vérifier les prérequis"
+	@echo "  $(GREEN)make up$(RESET)               $(GREY)# Démarrer et provisionner tout$(RESET)"
+	@echo "  $(GREEN)make status$(RESET)           $(GREY)# Vérifier l'état du cluster et de l'application$(RESET)"
+	@echo "  $(GREEN)make set-version-1$(RESET)    $(GREY)# Basculer l'application en v1 via GitOps$(RESET)"
+	@echo "  $(GREEN)make set-version-2$(RESET)    $(GREY)# Basculer l'application en v2 via GitOps$(RESET)"
+	@echo "  $(GREEN)make app-start$(RESET)        $(GREY)# Exposer l'application sur localhost:8080 en arrière-plan$(RESET)"
+	@echo "  $(GREEN)make app-stop$(RESET)         $(GREY)# Arrêter le port-forward de l'application sur 8080$(RESET)"
+	@echo "  $(GREEN)make clean$(RESET)            $(GREY)# Supprimer l'application Argo et les ressources dev$(RESET)"
+	@echo "  $(GREEN)make nuke$(RESET)             $(GREY)# Supprimer le cluster k3d$(RESET)"
+	@echo "  $(GREEN)make doctor$(RESET)           $(GREY)# Vérifier les prérequis$(RESET)"
 
 up:
 	@echo "$(YELLOW)Démarrage de l'application$(RESET)"
