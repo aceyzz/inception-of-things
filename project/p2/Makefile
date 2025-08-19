@@ -13,18 +13,17 @@ NC=\033[0m
 
 help:
 	@echo "$(CYAN)Commandes disponibles :$(NC)"
-	@echo "  $(GREEN)make up$(NC)              $(GREY)# Démarre la VM (vagrant up)$(NC)"
-	@echo "  $(GREEN)make halt$(NC)            $(GREY)# Arrête la VM (vagrant halt)$(NC)"
-	@echo "  $(GREEN)make destroy$(NC)         $(GREY)# Détruit la VM (vagrant destroy -f) et supprime .vagrant$(NC)"
-	@echo "  $(GREEN)make status$(NC)          $(GREY)# Affiche le statut de la VM (vagrant status)$(NC)"
-	@echo "  $(GREEN)make ssh$(NC)             $(GREY)# Se connecter en SSH sur la VM (vagrant ssh)$(NC)"
+	@echo "  $(GREEN)make up$(NC)              $(GREY)# Démarrage de la VM (vagrant up)$(NC)"
+	@echo "  $(GREEN)make halt$(NC)            $(GREY)# Arrêt de la VM (vagrant halt)$(NC)"
+	@echo "  $(GREEN)make destroy$(NC)         $(GREY)# Destruction de la VM (vagrant destroy -f) et suppression de .vagrant$(NC)"
+	@echo "  $(GREEN)make status$(NC)          $(GREY)# Statut de la VM (vagrant status)$(NC)"
+	@echo "  $(GREEN)make ssh$(NC)             $(GREY)# Connexion SSH à la VM (vagrant ssh)$(NC)"
 	@echo "  $(GREEN)make check-ip$(NC)        $(GREY)# Affiche l'IPV4 de la VM$(NC)"
-	@echo "  $(GREEN)make check-hostname$(NC)  $(GREY)# Affiche le hostname de la VM$(NC)"
 	@echo "  $(GREEN)make k3s-status$(NC)      $(GREY)# Vérifie le status de k3s sur la VM$(NC)"
-	@echo "  $(GREEN)make k3s-logs$(NC)        $(GREY)# Affiche les logs récents de k3s sur la VM$(NC)"
-	@echo "  $(GREEN)make deploy-apps$(NC)     $(GREY)# Déploie les 3 applications et l'ingress sur K3s$(NC)"
-	@echo "  $(GREEN)make get-pods$(NC)        $(GREY)# Affiche les pods déployés (kubectl get pods)$(NC)"
+	@echo "  $(GREEN)make kubectl-nodes$(NC)   $(GREY)# Affiche les nœuds kubectl et les ressources kube-system$(NC)"
+	@echo "  $(GREEN)make get-ingress$(NC)     $(GREY)# Affiche les ingress déployés (kubectl get/describe ingress)$(NC)"
 	@echo "  $(GREEN)make get-services$(NC)    $(GREY)# Affiche les services déployés (kubectl get svc)$(NC)"
+	@echo "  $(GREEN)make deploy-apps$(NC)     $(GREY)# Déploie les 3 applications et l'ingress sur K3s$(NC)"
 	@echo "  $(GREEN)make test-apps$(NC)       $(GREY)# Teste l'accès aux applications via curl (HOST)$(NC)"
 
 
@@ -53,17 +52,29 @@ check-ip:
 	@echo "$(YELLOW)IPV4 de la VM :$(NC)"
 	@vagrant ssh -c "ip -4 -o addr show | awk '{print $$4}' | cut -d/ -f1 | grep '192'"
 
-check-hostname:
-	@echo "$(YELLOW)Hostname de la VM :$(NC)"
-	@vagrant ssh -c "hostname"
-
 k3s-status:
 	@echo "$(YELLOW)Status de k3s...$(NC)"
 	@vagrant ssh -c "sudo systemctl status k3s || sudo systemctl status k3s-server"
 
-k3s-logs:
-	@echo "$(YELLOW)Logs de k3s...$(NC)"
-	@vagrant ssh -c "sudo journalctl -u k3s -n 50"
+kubectl-nodes:
+	@echo "$(YELLOW)Status des nodes...$(NC)"
+	@vagrant ssh -c "kubectl get nodes -o wide"
+	@echo ""
+	@echo "$(YELLOW)Affichage des ressources dans kube-system et des 3 applications déployées$(NC)"
+	@vagrant ssh -c "kubectl get all -n kube-system"
+	@echo ""
+
+get-ingress:
+	@echo "$(YELLOW)Récupération de l'ingress...$(NC)"
+	@vagrant ssh -c "kubectl get ingress -o wide"
+	@echo ""
+	@echo "$(YELLOW)Description de l'ingress...$(NC)"
+	@vagrant ssh -c "kubectl describe ingress"
+	@echo ""
+
+get-services:
+	@echo "$(YELLOW)Services déployés :$(NC)"
+	@vagrant ssh -c "kubectl get svc -o wide"
 
 deploy-apps:
 	@echo "$(YELLOW)Déploiement des applications et de l'ingress...$(NC)"
@@ -74,14 +85,6 @@ deploy-apps:
 	@vagrant ssh -c "kubectl apply -f /vagrant/confs/app3-deployment.yaml"
 	@vagrant ssh -c "kubectl apply -f /vagrant/confs/app3-service.yaml"
 	@vagrant ssh -c "kubectl apply -f /vagrant/confs/ingress.yaml"
-
-get-pods:
-	@echo "$(YELLOW)Pods déployés :$(NC)"
-	@vagrant ssh -c "kubectl get pods -o wide"
-
-get-services:
-	@echo "$(YELLOW)Services déployés :$(NC)"
-	@vagrant ssh -c "kubectl get svc -o wide"
 
 test-apps:
 	@echo "$(YELLOW)Test accès app1.com :$(NC)"

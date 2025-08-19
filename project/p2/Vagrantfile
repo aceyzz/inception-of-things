@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
 
     server.vm.provision "shell", inline: <<-SHELL
       apt-get update
-      curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644
+      curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644 --node-ip "192.168.56.110" --advertise-address "192.168.56.110"
       
       mkdir -p /home/vagrant/.kube
       cp /etc/rancher/k3s/k3s.yaml /home/vagrant/.kube/config
