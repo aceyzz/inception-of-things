@@ -43,8 +43,8 @@ Connexion SSH configurée via clés publiques.
 - `Vagrantfile` crée 2 VMs Ubuntu 22.04 :  
   - **cedmulleS** (controller, IP : `192.168.56.110`)  
   - **cedmulleSW** (worker, IP : `192.168.56.111`)  
-- Les clés SSH sont provisionnées automatiquement (`./ssh`).  
-- Installation automatique de `curl`, `nc` et `k3s` (controller + agent).  
+- Authentification par clés SSH.  
+- Installation automatique de `curl`, `nc`, `net-tools` et `k3s` (controller + agent).  
 - Le worker attend que le controller soit prêt (`nc -z IP 6443`).  
 
 ### Commandes Makefile
@@ -53,8 +53,9 @@ Connexion SSH configurée via clés publiques.
 - `make destroy` : détruit les VMs.  
 - `make status` : statut des VMs.  
 - `make ssh-controller` / `make ssh-worker` : accès SSH direct.  
-- `make ip-controller` / `make ip-worker` : affiche l’IP.  
-- `make k3s-status` : vérifie que K3s est actif sur les deux VMs.  
+- `make check-ip` : affiche les IP respectives des VMs.  
+- `make k3s-status` : vérifie que K3s est actif sur les deux VMs.
+- `make kubectl-nodes` : affiche les nœuds Kubernetes.
 
 ### Vérifications
 - Controller K3s actif : `systemctl status k3s-server`.  
