@@ -1,4 +1,4 @@
-.PHONY: help up halt destroy status ssh-controller ssh-worker check-ip kubectl-nodes k3s-status
+.PHONY: help up halt destroy status ssh-controller ssh-worker check-ip kubectl-nodes k3s-status vm-status
 
 RED=\033[0;31m
 GREEN=\033[0;32m
@@ -20,6 +20,7 @@ help:
 	@echo "  $(GREEN)make check-ip$(NC)        $(GREY)# Affiche les IP de la VM controller et worker$(NC)"
 	@echo "  $(GREEN)make kubectl-nodes$(NC)   $(GREY)# Affiche les nœuds Kubernetes (kubectl get nodes -o wide)$(NC)"
 	@echo "  $(GREEN)make k3s-status$(NC)      $(GREY)# Vérifie le status de k3s sur les deux VM$(NC)"
+	@echo "  $(GREEN)make vm-status$(NC)       $(GREY)# Vérifie les VM existantes sur la machine hote$(NC)"
 	@echo ""
 
 up:
@@ -66,3 +67,7 @@ k3s-status:
 	@echo "$(YELLOW)[Worker]$(NC)"
 	@vagrant ssh cedmulleSW -c "sudo systemctl status k3s-agent || sudo systemctl status k3s"
 	@echo ""
+
+vm-status:
+	@echo "$(YELLOW)[List of VMs]$(NC)"
+	@vboxmanage list vms
