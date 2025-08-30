@@ -4,23 +4,24 @@
 
 1. Configurer la variable d'environnement `cp .env.example .env` et modifier le .env pour ajouter un token
 2. Preparer script d'installation de K3s `chmod +x scripts/*.sh`
-3. Lancer le projet `make up`
+3. Check les commandes disponibles avec `make`
+4. Lancer le projet `make up`
 
 <br>
 
 ### Exigences du sujet
 
-| Exigences du sujet P1                                | Statut  | Commande Makefile     | Où regarder / Résultat attendu                                             |
-| ---------------------------------------------------- | :-----: | --------------------- | -------------------------------------------------------------------------- |
-| Utilisation de **Vagrant** avec VirtualBox           |    ✅   | `make up`             | Les VM démarrent via `Vagrantfile` (provider VirtualBox).                  |
-| Deux VMs distinctes : **controller** & **worker**    |    ✅   | `make status`         | Affiche `cedmulleS running` et `cedmulleSW running`.                       |
-| Réseau privé configuré avec IP fixes                 |    ✅   | `make check-ip`       | Affiche l’IP privée de chaque VM (192.168.56.110 / 192.168.56.111).        |
-| Authentification SSH sur controller                  |    ✅   | `make ssh-controller` | Connexion SSH sans mot de passe sur controller.                            |
-| Authentification SSH sur worker                      |    ✅   | `make ssh-worker`     | Connexion SSH sans mot de passe sur worker.                                |
-| Installation de K3s sur **controller** et **worker** |    ✅   | `make k3s-status`     | `[Controller]` → `active (running)` et `[Worker]` → `active (running)`     |
-| Utilisation d’un **token K3S partagé**               |    ✅   | `.env`                | Fichier `.env` contient `K3S_TOKEN=...`. Abandon si vide.                  |
-| Attente de disponibilité du controller (port 6443)   |    ✅   | `make up` (logs)      | Log `En attente de 192.168.56.110:6443` avant l’install worker.            |
-| Détruire et recréer les VM facilement                |    ✅   | `make destroy`        | `vagrant destroy -f` supprime tout.                                        |
+| Exigences du sujet P1                                | Statut  | Commande Makefile               | Où regarder / Résultat attendu                                             |
+| ---------------------------------------------------- | :-----: | ------------------------------- | -------------------------------------------------------------------------- |
+| Utilisation de **Vagrant** avec VirtualBox           |    ✅   | `make up` & `make vm-status`    | Les VM démarrent via `Vagrantfile` (provider VirtualBox).                  |
+| Deux VMs distinctes : **controller** & **worker**    |    ✅   | `make status`                   | Affiche `cedmulleS running` et `cedmulleSW running`.                       |
+| Réseau privé configuré avec IP fixes                 |    ✅   | `make check-ip`                 | Affiche l’IP privée de chaque VM (192.168.56.110 / 192.168.56.111).        |
+| Authentification SSH sur controller                  |    ✅   | `make ssh-controller`           | Connexion SSH sans mot de passe sur controller.                            |
+| Authentification SSH sur worker                      |    ✅   | `make ssh-worker`               | Connexion SSH sans mot de passe sur worker.                                |
+| Installation de K3s sur **controller** et **worker** |    ✅   | `make k3s-status`               | `[Controller]` → `active (running)` et `[Worker]` → `active (running)`     |
+| Utilisation d’un **token K3S partagé**               |    ✅   | `.env`                          | Fichier `.env` contient `K3S_TOKEN=...`. Abandon si vide.                  |
+| Attente de disponibilité du controller (port 6443)   |    ✅   | `make up` (logs)                | Log `En attente de 192.168.56.110:6443` avant l’install worker.            |
+| Détruire et recréer les VM facilement                |    ✅   | `make destroy`                  | `vagrant destroy -f` supprime tout.                                        |
 
 <br>
 
